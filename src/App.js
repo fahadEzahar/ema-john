@@ -1,26 +1,68 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { createContext } from 'react';
+import Header from './components/Header/Header';
+import Shop from './components/Shop/Shop';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
+import Review from './components/Review/Review';
+import NotFound from './components/NotFound/NotFound';
+import Inventory from './components/Inventory/Inventory';
+import ProductDetail from './components/ProductDetail/ProductDetail';
+import Shipment from './components/Shipment/Shipment';
+import Login from './components/Login/Login';
+import { useState } from 'react';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+
+export const userContext = createContext();
 
 function App() {
+const [loggedInUser,setLoggedInUser] = useState({})
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+    <userContext.Provider value={[loggedInUser,setLoggedInUser]} >
+      <p>email: {loggedInUser.email}</p>
+      
+      <Router>
+      <Header />
+        <Switch>
+          <Route exact path="/">
+            <Shop />
+          </Route>
+          <Route path="/shop">
+            <Shop />
+          </Route>
+          <Route path="/review">
+            <Review />
+          </Route>
+          <PrivateRoute path="/inventory">
+            <Inventory/>
+          </PrivateRoute>
+          <PrivateRoute path="/shipment">
+            <Shipment/>
+          </PrivateRoute>
+          <Route path="/login">
+            <Login/>
+          </Route>
+          <Route path="/product/:productKey">
+            <ProductDetail/>
+          </Route>
+          <Route path="*">
+            <NotFound/>
+          </Route>
+        </Switch>
+      </Router>
+
+
+
+    </userContext.Provider>
+
+
+  )
 }
 
 export default App;
